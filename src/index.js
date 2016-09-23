@@ -59,7 +59,7 @@ export default class ConsoleWrapper {
     for (let event in ConsoleWrapper.events) {
       if(ConsoleWrapper.events.hasOwnProperty(event)) {
         newConsole[event] = this._wrapperFn.bind(consoleClone, event, consoleClone[event]);
-        this._emitter.on(event, (p) => this._eventLog.push({ ...p }));
+        this._emitter.on(event, (p) => this._eventLog.push({ EventName: event, ...p }));
       }
     }
     return newConsole;
