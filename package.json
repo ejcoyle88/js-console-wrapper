@@ -1,8 +1,8 @@
 {
   "name": "js-console-wrapper",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Provides a wrapper around the window.console object, so that loggers can be injected.",
+  "main": "dist/index.js",
   "scripts": {
     "build": "webpack"
   },
@@ -10,8 +10,8 @@
     "type": "git",
     "url": "git+https://github.com/ejcoyle88/js-console-wrapper.git"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Elliot Coyle <elliot@vaetek.biz>",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/ejcoyle88/js-console-wrapper/issues"
   },
