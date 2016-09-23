@@ -1,5 +1,5 @@
 ## js-console-wrapper
-A small wrapper around the window.console object so that various other wrappers can be injected.
+A small wrapper around the window.console object so that various other loggers can be injected.
 
 ### Usage Example
 ```javascript
