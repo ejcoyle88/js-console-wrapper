@@ -48,6 +48,7 @@ export default class ConsoleWrapper {
     this._options = Object.assign({}, ConsoleWrapper._defaultOptions, options);
     this._emitter = new EventEmitter();
     this._wrapperFn = wrapperFunc.bind(this, this._emitter, this._options.passThrough);
+    this._emit = function(event) { this._wrapperFn(event, function(){}); }.bind(this);
     this._eventLog = [];
     this._existingConsole = null;
   }
@@ -66,7 +67,10 @@ export default class ConsoleWrapper {
 
   wrap = (existingConsole) => {
     let consoleClone = makeConsoleIESafe(existingConsole);
-    let newConsole = { existingConsole: existingConsole };
+    let newConsole = { 
+      existingConsole: existingConsole,
+      emit: this._emit
+    };
     for (let event in ConsoleWrapper.events) {
       if(ConsoleWrapper.events.hasOwnProperty(event)) {
         newConsole[event] = this._wrapperFn.bind(consoleClone, event, consoleClone[event]);
