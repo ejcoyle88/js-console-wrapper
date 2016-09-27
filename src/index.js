@@ -49,13 +49,24 @@ export default class ConsoleWrapper {
     this._emitter = new EventEmitter();
     this._wrapperFn = wrapperFunc.bind(this, this._emitter, this._options.passThrough);
     this._eventLog = [];
+    this._existingConsole = null;
   }
 
-  getEventLog = () => this._eventLog;
+  getEventLog = () => {
+    return this._eventLog;
+  };
+  
+  on = (event, cb) => {
+    return this._emitter.on(event, cb);
+  };
+
+  removeListener = (event, cb) => {
+    return this._emitter.removeListener(event, cb);
+  };
 
   wrap = (existingConsole) => {
     let consoleClone = makeConsoleIESafe(existingConsole);
-    let newConsole = {};
+    let newConsole = { existingConsole: existingConsole };
     for (let event in ConsoleWrapper.events) {
       if(ConsoleWrapper.events.hasOwnProperty(event)) {
         newConsole[event] = this._wrapperFn.bind(consoleClone, event, consoleClone[event]);
@@ -63,14 +74,6 @@ export default class ConsoleWrapper {
       }
     }
     return newConsole;
-  };
-
-  on = (event, cb) => {
-    return this._emitter.on(event, cb);
-  };
-
-  removeListener = (event, cb) => {
-    return this._emitter.removeListener(event, cb);
   };
 }
 
