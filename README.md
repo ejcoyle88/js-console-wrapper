@@ -16,6 +16,12 @@ window.wrapper.on(ConsoleWrapper.events.log, function(params) {
   $.put('someLogger/newLog', params) 
 });
 
+// You can also capture events that arnt normally on console.
+window.wrapper.on('silentLog', function(p) {
+  $.put('someLogger/newLog', p);
+});
+
 // At some point later
 console.log('I hope no customers see this super secret password:', 'abc123');
+console.emit('silentLog', 'Or you can also do this');
 ```
