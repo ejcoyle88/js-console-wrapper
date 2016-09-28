@@ -24,10 +24,11 @@ function makeConsoleIESafe(existingConsole) {
   return existingConsoleClone;
 }
 
-function wrapperFunc(emitter, passThrough, event, defaultFn) {
+function wrapperFunc(eventLog, emitter, passThrough, defaultFn, event) {
   let args = Array.prototype.slice.call(arguments);
-  args = args.slice(4);
+  args = args.slice(5);
   emitter.emit(event, args);
+  eventLog.push({ EventName: event, ...args });
   if (passThrough) {
     defaultFn.apply(this, args);
   }
@@ -46,10 +47,10 @@ export default class ConsoleWrapper {
 
   constructor(options) {
     this._options = Object.assign({}, ConsoleWrapper._defaultOptions, options);
-    this._emitter = new EventEmitter();
-    this._wrapperFn = wrapperFunc.bind(this, this._emitter, this._options.passThrough);
-    this._emit = function(event) { this._wrapperFn(event, function(){}); }.bind(this);
     this._eventLog = [];
+    this._emitter = new EventEmitter();
+    this._wrapperFn = wrapperFunc.bind(this, this._eventLog, this._emitter, this._options.passThrough);
+    this._emit = this._wrapperFn.bind(this, function(){});
     this._existingConsole = null;
   }
 
@@ -73,8 +74,7 @@ export default class ConsoleWrapper {
     };
     for (let event in ConsoleWrapper.events) {
       if(ConsoleWrapper.events.hasOwnProperty(event)) {
-        newConsole[event] = this._wrapperFn.bind(consoleClone, event, consoleClone[event]);
-        this._emitter.on(event, (p) => this._eventLog.push({ EventName: event, ...p }));
+        newConsole[event] = this._wrapperFn.bind(consoleClone, consoleClone[event], event);
       }
     }
     return newConsole;
