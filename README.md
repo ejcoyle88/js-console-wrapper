@@ -6,7 +6,9 @@ A small wrapper around the window.console object so that various other loggers c
 window.wrapper = new ConsoleWrapper({
   // If true, perform the normal behavior of the function as well as
   // calling any attached callbacks.
-  passThrough: false
+  passThrough: false,
+  // Set the initial logging level.
+  logLevel: ConsoleWrapper.logLevel.log
 });
 
 window.console = window.wrapper.wrap(window.console);
