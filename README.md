@@ -25,7 +25,7 @@ window.wrapper.on(ConsoleWrapper.events.log, function(logLevel, args) {
 
 // You can also capture events that arnt normally on console.
 window.wrapper.on('silentLog', function(logLevel, args) {
-  $.put('someLogger/newLog', p);
+  $.put('someLogger/newLog', args);
 });
 
 // At some point later
