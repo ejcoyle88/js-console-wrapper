@@ -97,3 +97,7 @@ export default class ConsoleWrapper {
   };
 }
 
+if(window != null && window.ConsoleWrapper ==  null) {
+  window.ConsoleWrapper = ConsoleWrapper;
+}
+
