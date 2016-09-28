@@ -56,7 +56,7 @@ export default class ConsoleWrapper {
   getEventLog = () => {
     return this._eventLog;
   };
-  
+
   on = (event, cb) => {
     return this._emitter.on(event, cb);
   };
@@ -67,7 +67,7 @@ export default class ConsoleWrapper {
 
   wrap = (existingConsole) => {
     let consoleClone = makeConsoleIESafe(existingConsole);
-    let newConsole = { 
+    let newConsole = {
       existingConsole: existingConsole,
       emit: this._emit
     };
