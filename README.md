@@ -11,13 +11,18 @@ window.wrapper = new ConsoleWrapper({
 
 window.console = window.wrapper.wrap(window.console);
 
-window.wrapper.on(ConsoleWrapper.events.log, function(params) {
-  // Send all console.log events off to some api somewhere.
-  $.put('someLogger/newLog', params) 
+// The emitter will pass back the current logging level, and an array
+// of the arguments passed to the console function.
+window.wrapper.on(ConsoleWrapper.events.log, function(logLevel, args) {
+  // Log levels can be used to filter out logs on the fly.
+  if(logLevel <= ConsoleWrapper.logLevels.log) {
+    // Send all console.log events off to some api somewhere.
+    $.put('someLogger/newLog', args);
+  }
 });
 
 // You can also capture events that arnt normally on console.
-window.wrapper.on('silentLog', function(p) {
+window.wrapper.on('silentLog', function(logLevel, args) {
   $.put('someLogger/newLog', p);
 });
 
