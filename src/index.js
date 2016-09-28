@@ -10,14 +10,14 @@ function createConstants() {
   return constants;
 }
 
-function makeConsoleIESafe(existingConsole) {
+function makeConsoleIESafe(events, existingConsole) {
   if (!Function.prototype.bind || !existingConsole || !(typeof existingConsole.log === 'object')) {
     return existingConsole;
   }
 
   var existingConsoleClone = Object.assign({}, existingConsole);
 
-  ['log', 'info', 'warn', 'error', 'assert', 'dir', 'clear', 'profile', 'profileEnd'].forEach(function (method) {
+  events.forEach(function (method) {
     existingConsoleClone[method] = this.bind(existingConsoleClone[method], existingConsoleClone);
   }, Function.prototype.call);
 
@@ -40,10 +40,11 @@ export default class ConsoleWrapper {
     // calling any attached callbacks.
     passThrough: true
   };
-  static events = createConstants(
-      'log', 'info', 'warn', 'error', 'assert',
-      'dir', 'clear', 'profile', 'profileEnd'
-  );
+  static _events = [
+    'log', 'info', 'warn', 'error', 'assert',
+    'dir', 'clear', 'profile', 'profileEnd'
+  ];
+  static events = createConstants.apply(this, ConsoleWrapper._events);
 
   constructor(options) {
     this._options = Object.assign({}, ConsoleWrapper._defaultOptions, options);
@@ -51,7 +52,6 @@ export default class ConsoleWrapper {
     this._emitter = new EventEmitter();
     this._wrapperFn = wrapperFunc.bind(this, this._eventLog, this._emitter, this._options.passThrough);
     this._emit = this._wrapperFn.bind(this, function(){});
-    this._existingConsole = null;
   }
 
   getEventLog = () => {
@@ -67,7 +67,7 @@ export default class ConsoleWrapper {
   };
 
   wrap = (existingConsole) => {
-    let consoleClone = makeConsoleIESafe(existingConsole);
+    let consoleClone = makeConsoleIESafe(ConsoleWrapper._events, existingConsole);
     let newConsole = {
       existingConsole: existingConsole,
       emit: this._emit
