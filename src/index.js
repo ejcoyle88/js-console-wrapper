@@ -57,9 +57,8 @@ export default class ConsoleWrapper {
 
   wrapperFunc(defaultFn, event) {
     let args = Array.prototype.slice.call(arguments);
-    args = [event, ...args.slice(2)];
-    args.logLevel = this._logLevel;
-    this._emitter.emit.apply(this._emitter, args);
+    args = args.slice(2);
+    this._emitter.emit(event, this._logLevel, args);
     this._eventLog.push({ EventName: event, LogLevel: this._logLevel, ...args });
     var eventLogLevel = this.getEventLogLevel(event);
     if (this._options.passThrough && (eventLogLevel == null || eventLogLevel >= this._logLevel)) {
